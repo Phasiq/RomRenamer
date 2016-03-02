@@ -14,7 +14,10 @@ namespace RomRenamer.ConsoleApp
             for (int i = 0; i < fileNameLength; i++)
             {
                 var fileNameSubstring = fileName.Substring(0, fileNameLength - i);
-
+                var matches =
+                    gameTitles.Where(s => s.StartsWith(fileNameSubstring, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                if (matches.Any())
+                    return matches;
             }
             return new List<string>();
         } 

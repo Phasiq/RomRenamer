@@ -9,7 +9,7 @@ namespace RomRenamer.ConsoleApp
 {
     public static class DirectoryFinder
     {
-        public static IEnumerable<string> Find(string directoryPath)
+        public static IReadOnlyCollection<string> Find(string directoryPath)
         {
             if (string.IsNullOrWhiteSpace(directoryPath))
             {

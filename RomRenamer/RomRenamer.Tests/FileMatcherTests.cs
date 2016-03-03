@@ -12,7 +12,7 @@ namespace RomRenamer.Tests
         {
             var namesAvailable = new List<string> {"Superman", "Batman"};
             var fileName = "bat";
-            var result = FileMatcher.GetMatches(fileName, namesAvailable);
+            var result = FileMatcher.GetUserDefinedMatch(fileName, namesAvailable);
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count);
         }

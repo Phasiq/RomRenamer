@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Xml.Linq;
 
 namespace RomRenamer.ConsoleApp
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             // First, ask the user for the location of ROM files
             var directoryFinder = new DirectoryFinder(new UserReadWrite());
@@ -19,33 +18,44 @@ namespace RomRenamer.ConsoleApp
             }
 
             // Now, get the XML to compare to
-            IReadOnlyCollection<string> doc = null;
-            do
+            var xmlParser = new XmlParser(new UserReadWrite());
+            IList<string> xmlTitles = xmlParser.FindTitles();
+            if (xmlTitles == null)
             {
-                Console.WriteLine(
-                    "Please enter the path and filename of the XML file containg the list of ROMs or enter 'q' to quit.");
-                var userEntry = Console.ReadLine();
-                if (userEntry != null && userEntry.Equals("q", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return;
-                }
-                doc = XmlParser.GetRomTitles(userEntry);
-            } while (doc == null);
+                return;
+            }
 
-            var timer = new Stopwatch();
+            var totalFilesToProcess = fileList.Count;
+            var totalFilesProcessed = 0;
+            var successfulRenames = 0;
+
             foreach (var file in fileList)
             {
-                timer.Start();
-                var result = FileMatcher.GetMatches(file, doc);
-                if (!result.Any())
+                var fileMatcher = new FileMatcher(new UserReadWrite());
+                if (fileMatcher.HasPerfectMatch(file, xmlTitles))
                 {
-                    Console.WriteLine("No match was found for " + file + ". Press any key to continue");
-                    Console.ReadKey();
+                    Console.WriteLine("Perfect match for " + file);
+                    totalFilesProcessed++;
                     continue;
                 }
+                var result = fileMatcher.GetUserDefinedMatch(file, xmlTitles);
+                totalFilesProcessed++;
+                if (result == null)
+                {
+                    Console.WriteLine("No match was found for " + file + ". Press 'q' to quit or any other key to continue.");
+                    var key = Console.ReadKey();
+                    if (key.KeyChar == 'q')
+                    {
+                        return;
+                    }
+                }
+                successfulRenames++;
             }
 
             // Ask for a key press to close the app
+            Console.WriteLine("Processing complete!");
+            Console.WriteLine("Processed " + totalFilesProcessed + " of " + totalFilesToProcess + ". " + successfulRenames + "files renamed.");
+            Console.WriteLine("Press any key to quit.");
             Console.ReadKey();
         }
     }

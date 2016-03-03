@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileRenamer.cs" />
     <Compile Include="UserReadWrite.cs" />
     <Compile Include="DirectoryFinder.cs" />
     <Compile Include="FileMatcher.cs" />

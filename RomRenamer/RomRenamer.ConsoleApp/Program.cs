@@ -11,26 +11,12 @@ namespace RomRenamer.ConsoleApp
         static void Main(string[] args)
         {
             // First, ask the user for the location of ROM files
-            IReadOnlyCollection<string> fileList = null;
-            do
+            var directoryFinder = new DirectoryFinder(new UserReadWrite());
+            IReadOnlyCollection<string> fileList = directoryFinder.Find();
+            if (fileList == null)
             {
-                Console.WriteLine("Please enter the path to the directory containing your ROM files or enter 'q' to quit.");
-                var userEntry = Console.ReadLine();
-                if (userEntry != null && userEntry.Equals("q", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return;
-                }
-
-                fileList = DirectoryFinder.Find(Console.ReadLine());
-            } while (fileList == null);
-
-            if (!fileList.Any())
-            {
-                Console.WriteLine("No games were found. Press any key to quit.");
-                Console.ReadKey();
                 return;
             }
-                
 
             // Now, get the XML to compare to
             IReadOnlyCollection<string> doc = null;
@@ -51,7 +37,12 @@ namespace RomRenamer.ConsoleApp
             {
                 timer.Start();
                 var result = FileMatcher.GetMatches(file, doc);
-
+                if (!result.Any())
+                {
+                    Console.WriteLine("No match was found for " + file + ". Press any key to continue");
+                    Console.ReadKey();
+                    continue;
+                }
             }
 
             // Ask for a key press to close the app

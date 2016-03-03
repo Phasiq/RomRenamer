@@ -8,7 +8,7 @@ namespace RomRenamer.ConsoleApp
 {
     public static class FileMatcher
     {
-        public static IReadOnlyCollection<string> GetMatches(string fileName, IReadOnlyCollection<string> gameTitles)
+        public static IList<string> GetMatches(string fileName, IReadOnlyCollection<string> gameTitles)
         {
             var fileNameLength = fileName.Length;
             for (int i = 0; i < fileNameLength; i++)

@@ -14,14 +14,14 @@ namespace RomRenamer.Tests
         public void Find_ReturnsTwoFiles_PassedValidPath()
         {
             var files =
-                DirectoryFinder.Find(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/TestFiles");
+                DirectoryFinder.GetFilesFromPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/TestFiles");
             Assert.AreEqual(2, files.Count());
         }
 
         [TestMethod]
         public void Find_ReturnsNull_PassedInvalidPath()
         {
-            var files = DirectoryFinder.Find(@"E:\derpytesttest");
+            var files = DirectoryFinder.GetFilesFromPath(@"E:\derpytesttest");
             Assert.IsNull(files);
         }
     }

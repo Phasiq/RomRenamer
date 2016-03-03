@@ -2,18 +2,66 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RomRenamer.ConsoleApp
 {
-    public static class DirectoryFinder
+    public class DirectoryFinder
     {
-        public static IReadOnlyCollection<string> Find(string directoryPath)
+        private readonly IUserReadWrite _userInteraction;
+
+        public DirectoryFinder(IUserReadWrite userInteraction)
+        {
+            _userInteraction = userInteraction;
+        }
+
+        public IReadOnlyCollection<string> Find()
+        {
+            do
+            {
+                _userInteraction.WriteLine("Please enter the path to the directory containing your ROM files or enter 'q' to quit.");
+                var userEntry = _userInteraction.ReadLine();
+                if (userEntry != null && userEntry.Equals("q", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return null;
+                }
+
+                var files = GetFilesFromPath(userEntry);
+                if (files.Any())
+                {
+                    return files;
+                }
+                _userInteraction.WriteLine("No files were found. Would you like to choose a different path? y/n");
+                var result = ConfirmNewPath();
+                if (!result)
+                {
+                    return null;
+                }
+                
+            } while (true);
+        }
+
+        private bool ConfirmNewPath()
+        {
+            do
+            {
+                var userEntry = _userInteraction.ReadKey();
+                switch (userEntry.KeyChar)
+                {
+                    case 'y':
+                    case 'Y':
+                        return true;
+                    case 'n':
+                    case 'N':
+                        return false;
+                }
+            } while (true);
+        }
+
+        private IReadOnlyCollection<string> GetFilesFromPath(string directoryPath)
         {
             if (string.IsNullOrWhiteSpace(directoryPath))
             {
-                Console.WriteLine("The directory path is required.");
+                _userInteraction.WriteLine("The directory path is required.");
                 return null;
             }
             try
@@ -23,19 +71,19 @@ namespace RomRenamer.ConsoleApp
             }
             catch (DirectoryNotFoundException)
             {
-                Console.WriteLine("The specified directory path (" + directoryPath + " is invalid or does not exist.");
+                _userInteraction.WriteLine("The specified directory path (" + directoryPath + " is invalid or does not exist.");
             }
             catch (PathTooLongException)
             {
-                Console.WriteLine("The specified directory path is too long.");
+                _userInteraction.WriteLine("The specified directory path is too long.");
             }
             catch (UnauthorizedAccessException)
             {
-                Console.WriteLine("You do not have permission to access the specified directory.");
+                _userInteraction.WriteLine("You do not have permission to access the specified directory.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An unexpected error occurred. " + ex);
+                _userInteraction.WriteLine("An unexpected error occurred. " + ex);
             }
             return null;
         } 

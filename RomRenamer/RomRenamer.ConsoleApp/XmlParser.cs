@@ -6,9 +6,16 @@ using System.Xml.Linq;
 
 namespace RomRenamer.ConsoleApp
 {
-    public static class XmlParser
+    public class XmlParser
     {
-        public static IReadOnlyCollection<string> GetRomTitles(string xmlFilePath)
+        private readonly IUserReadWrite _userInteraction;
+
+        public XmlParser(IUserReadWrite userInteraction)
+        {
+            _userInteraction = userInteraction;
+        }
+
+        public IReadOnlyCollection<string> GetRomTitles(string xmlFilePath)
         {
             XDocument file = null;
             try
@@ -17,27 +24,27 @@ namespace RomRenamer.ConsoleApp
             }
             catch (PathTooLongException)
             {
-                Console.WriteLine("The specified file path is too long.");
+                _userInteraction.WriteLine("The specified file path is too long.");
                 return null;
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine("The specified file '" + xmlFilePath + "' was not found.");
+                _userInteraction.WriteLine("The specified file '" + xmlFilePath + "' was not found.");
                 return null;
             }
             catch (DirectoryNotFoundException)
             {
-                Console.WriteLine("The specified file path '" + xmlFilePath + "' is invalid.");
+                _userInteraction.WriteLine("The specified file path '" + xmlFilePath + "' is invalid.");
                 return null;
             }
             catch (XmlException)
             {
-                Console.WriteLine("The specified file does not contain valid XML.");
+                _userInteraction.WriteLine("The specified file does not contain valid XML.");
                 return null;
             }
             catch (UnauthorizedAccessException)
             {
-                Console.WriteLine("You do not have permission to access the specified file.");
+                _userInteraction.WriteLine("You do not have permission to access the specified file.");
                 return null;
             }
             var xElement = file.Element("menu");

@@ -17,7 +17,8 @@ namespace RomRenamer.ConsoleApp
             try
             {
                 File.Move(oldFilePathAndName,
-                    Path.GetDirectoryName(oldFilePathAndName) + @"/" + newFilePathAndName + Path.GetExtension(oldFilePathAndName));
+                    Path.GetDirectoryName(oldFilePathAndName) + @"/" + newFilePathAndName +
+                    Path.GetExtension(oldFilePathAndName));
                 return true;
             }
             catch (DirectoryNotFoundException)
@@ -32,6 +33,10 @@ namespace RomRenamer.ConsoleApp
             catch (UnauthorizedAccessException)
             {
                 _userInteraction.WriteLine("You do not have permission to change the file name.");
+            }
+            catch (IOException)
+            {
+                _userInteraction.WriteLine("The destination file already exists.");
             }
             return false;
         }

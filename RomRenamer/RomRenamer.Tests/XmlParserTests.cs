@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -15,28 +16,31 @@ namespace RomRenamer.Tests
         [TestMethod]
         public void GetRomTitles_ReturnsFilenameList_ValidPathToXmlFileProvided()
         {
-            var files =
-                XmlParser.GetRomTitles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
-                               "/TestFiles/Super Nintendo Entertainment System.xml");
+            throw new NotImplementedException();
+            //var files =
+            //    XmlParser.GetRomTitles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
+            //                   "/TestFiles/Super Nintendo Entertainment System.xml");
 
-            Assert.IsNotNull(files);
-            Assert.IsInstanceOfType(files, typeof(IEnumerable<string>));
+            //Assert.IsNotNull(files);
+            //Assert.IsInstanceOfType(files, typeof(IEnumerable<string>));
         }
 
         [TestMethod]
         public void GetRomTitles_ReturnsNull_InvalidPathProvided()
         {
-            var file = XmlParser.GetRomTitles(@"Y:\InvalidPathThatDoesntExists");
-            Assert.IsNull(file);
+            throw new NotImplementedException();
+            //var file = XmlParser.GetRomTitles(@"Y:\InvalidPathThatDoesntExists");
+            //Assert.IsNull(file);
         }
 
         [TestMethod]
         public void GetRomTitles_ReturnsNull_InvalidXmlFileProvided()
         {
-            var file =
-                XmlParser.GetRomTitles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
-                               "/TestFiles/TestFile1.txt");
-            Assert.IsNull(file);
+            throw new NotImplementedException();
+            //var file =
+            //    XmlParser.GetRomTitles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
+            //                   "/TestFiles/TestFile1.txt");
+            //Assert.IsNull(file);
         }
     }
 }

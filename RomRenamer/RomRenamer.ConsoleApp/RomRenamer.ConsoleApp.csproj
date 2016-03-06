@@ -47,7 +47,6 @@
     <Compile Include="UserReadWrite.cs" />
     <Compile Include="DirectoryFinder.cs" />
     <Compile Include="FileMatcher.cs" />
-    <Compile Include="FileSelector.cs" />
     <Compile Include="IUserReadWrite.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -57,17 +57,18 @@
     <Compile Include="FileMatcherTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DirectoryFinderTests.cs" />
+    <Compile Include="Stubs\TestUserReadWrite.cs" />
     <Compile Include="XmlParserTests.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="TestFiles\Super Nintendo Entertainment System.xml">
+    <Content Include="TestXml\Super Nintendo Entertainment System.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestFiles\TestFile1.txt">
+    <Content Include="TestRoms\TestFile1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestFiles\TestFile2.txt">
+    <Content Include="TestRoms\TestFile2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

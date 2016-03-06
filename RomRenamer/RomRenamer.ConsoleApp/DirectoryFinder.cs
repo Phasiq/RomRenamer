@@ -26,11 +26,11 @@ namespace RomRenamer.ConsoleApp
                 }
 
                 var files = GetFilesFromPath(userEntry);
-                if (files.Any())
+                if (files != null && files.Any())
                 {
                     return files;
                 }
-                _userInteraction.WriteLine("No files were found. Would you like to choose a different path? y/n");
+                _userInteraction.WriteLine("No files were found at the specified location.");
                 var result = ConfirmNewPath();
                 if (!result)
                 {
@@ -44,6 +44,7 @@ namespace RomRenamer.ConsoleApp
         {
             do
             {
+                _userInteraction.WriteLine("Would you like to choose a different path? y/n");
                 var userEntry = _userInteraction.ReadKey();
                 switch (userEntry.KeyChar)
                 {
@@ -53,6 +54,11 @@ namespace RomRenamer.ConsoleApp
                     case 'n':
                     case 'N':
                         return false;
+                    default:
+                    {
+                        _userInteraction.WriteLine("Invalid selection. Would you like to choose a different path? y/n");
+                        continue;
+                    }
                 }
             } while (true);
         }

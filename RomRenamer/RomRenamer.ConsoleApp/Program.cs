@@ -31,7 +31,7 @@ namespace RomRenamer.ConsoleApp
 
             foreach (var file in fileList)
             {
-                var fileMatcher = new FileMatcher(new UserReadWrite());
+                var fileMatcher = new FileMatcher(new UserReadWrite(), 9);
                 if (fileMatcher.HasPerfectMatch(file, xmlTitles))
                 {
                     Console.WriteLine("Perfect match for " + file);

@@ -12,12 +12,12 @@ namespace RomRenamer.ConsoleApp
             _userInteraction = userInteraction;
         }
 
-        public bool Rename(string oldFilePathAndName, string newFilePathAndName)
+        public bool Rename(string oldFilePathAndName, string newFileName)
         {
             try
             {
                 File.Move(oldFilePathAndName,
-                    Path.GetDirectoryName(oldFilePathAndName) + @"/" + newFilePathAndName +
+                    Path.GetDirectoryName(oldFilePathAndName) + @"/" + newFileName +
                     Path.GetExtension(oldFilePathAndName));
                 return true;
             }
@@ -36,9 +36,28 @@ namespace RomRenamer.ConsoleApp
             }
             catch (IOException)
             {
-                _userInteraction.WriteLine("The destination file already exists.");
+                _userInteraction.WriteLine("The destination file already exists. Would you like to replace it? y/n");
+                do
+                {
+                    var userResponse = _userInteraction.ReadKey().KeyChar.ToString();
+                    if (userResponse.Equals("y", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return ReplaceFile(oldFilePathAndName, newFileName);
+                    }
+                    if (userResponse.Equals("n", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                } while (true);
             }
             return false;
+        }
+
+        public bool ReplaceFile(string oldFilePathAndName, string newFileName)
+        {
+            File.Delete(Path.GetDirectoryName(oldFilePathAndName) + @"/" + newFileName +
+                    Path.GetExtension(oldFilePathAndName));
+            return Rename(oldFilePathAndName, newFileName);
         }
     }
 }

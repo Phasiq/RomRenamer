@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace RomRenamer.ConsoleApp
@@ -31,14 +32,14 @@ namespace RomRenamer.ConsoleApp
 
             foreach (var file in fileList)
             {
-                var fileMatcher = new FileMatcher(new UserReadWrite(), 9);
-                if (fileMatcher.HasPerfectMatch(file, xmlTitles))
+                var fileMatcher = new FileMatcher(new UserReadWrite(), 9, file, xmlTitles);
+                if (fileMatcher.HasPerfectMatch())
                 {
                     Console.WriteLine("Perfect match for " + file);
                     totalFilesProcessed++;
                     continue;
                 }
-                var result = fileMatcher.GetUserDefinedMatch(file, xmlTitles);
+                var result = fileMatcher.GetUserDefinedMatch();
                 totalFilesProcessed++;
                 if (result == null)
                 {
@@ -49,7 +50,14 @@ namespace RomRenamer.ConsoleApp
                         return;
                     }
                 }
-                successfulRenames++;
+
+                if (result == null)
+                    continue;
+                var fileRenamer = new FileRenamer(new UserReadWrite());
+                if (fileRenamer.Rename(file, result))
+                {
+                    successfulRenames++;
+                }
             }
 
             // Ask for a key press to close the app

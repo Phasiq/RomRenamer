@@ -10,33 +10,38 @@ namespace RomRenamer.ConsoleApp
     {
         private readonly IUserReadWrite _userInteraction;
         private readonly int _pageSize;
+        private readonly string _fileName;
+        private readonly IList<string> _gameList;
+        private string _shortName;
 
-        public FileMatcher(IUserReadWrite userInteraction, int pageSize)
+        public FileMatcher(IUserReadWrite userInteraction, int pageSize, string fileName, IList<string> gameList)
         {
             _userInteraction = userInteraction;
             if (pageSize > 9 || pageSize < 1)
                 throw new ArgumentException("The pageSize must be between 1 and 9. Current value is " + pageSize);
             _pageSize = pageSize;
+            _fileName = fileName;
+            _shortName = Path.GetFileNameWithoutExtension(_fileName);
+            _gameList = gameList;
         }
 
-        public bool HasPerfectMatch(string fileName, IList<string> games)
+        public bool HasPerfectMatch()
         {
-            return games.Any(x => x.Equals(fileName, StringComparison.InvariantCultureIgnoreCase));
+            return _gameList.Any(x => x.Equals(Path.GetFileNameWithoutExtension(_fileName), StringComparison.InvariantCultureIgnoreCase));
         }
 
-        public string GetUserDefinedMatch(string fileName, IList<string> gameTitles)
+        public string GetUserDefinedMatch()
         {
-            var fileNameLength = fileName.Length;
+            var fileNameLength = _shortName.Length;
             for (int i = 1; i < fileNameLength; i++)
             {
-                var fileNameSubstring = fileName.Substring(0, fileNameLength - i);
+                var fileNameSubstring = _shortName.Substring(0, fileNameLength - i);
                 var matches =
-                    gameTitles.Where(s => s.StartsWith(fileNameSubstring, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                    _gameList.Where(s => s.StartsWith(fileNameSubstring, StringComparison.InvariantCultureIgnoreCase)).ToList();
                 
                 if (matches.Any())
                 {
                     return SelectFilename(matches);
-                    
                 }
             }
             return null;
@@ -44,7 +49,7 @@ namespace RomRenamer.ConsoleApp
 
         private string SelectFilename(IList<string> fileTitles)
         {
-            _userInteraction.WriteLine("Select the corresponding number to the file that matches");
+            _userInteraction.WriteLine("Select the corresponding number to the file that matches: " + _shortName);
 
             var pages = (fileTitles.Count + _pageSize - 1)/_pageSize;
 
@@ -54,7 +59,7 @@ namespace RomRenamer.ConsoleApp
                 int x = 1;
                 foreach (var title in titles)
                 {
-                    _userInteraction.WriteLine(x++ + ". title");
+                    _userInteraction.WriteLine(x++ + ". " + title);
                 }
                 if (i < pages)
                 {

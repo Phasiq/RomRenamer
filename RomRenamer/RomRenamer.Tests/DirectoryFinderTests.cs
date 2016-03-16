@@ -20,8 +20,8 @@ namespace RomRenamer.Tests
 
             var testUserInteraction = new TestUserReadWrite(readKeys, readLines);
 
-            var directoryFinder = new DirectoryFinder(testUserInteraction);
-            var files = directoryFinder.Find();
+            var directoryFinder = new FileRetriever(testUserInteraction);
+            var files = directoryFinder.GetFileLocation();
             Assert.AreEqual(2, files.Count);
         }
 
@@ -33,8 +33,8 @@ namespace RomRenamer.Tests
 
             var testUserInteraction = new TestUserReadWrite(readKeys, readLines);
 
-            var directoryFinder = new DirectoryFinder(testUserInteraction);
-            var files = directoryFinder.Find();
+            var directoryFinder = new FileRetriever(testUserInteraction);
+            var files = directoryFinder.GetFileLocation();
             Assert.IsNull(files);
         }
 
@@ -46,8 +46,8 @@ namespace RomRenamer.Tests
 
             var testUserInteraction = new TestUserReadWrite(readKeys, readLines);
 
-            var directoryFinder = new DirectoryFinder(testUserInteraction);
-            var files = directoryFinder.Find();
+            var directoryFinder = new FileRetriever(testUserInteraction);
+            var files = directoryFinder.GetFileLocation();
             Assert.AreEqual(2, files.Count);
         }
 
@@ -59,8 +59,8 @@ namespace RomRenamer.Tests
 
             var testUserInteraction = new TestUserReadWrite(readKeys, readLines);
 
-            var directoryFinder = new DirectoryFinder(testUserInteraction);
-            var files = directoryFinder.Find();
+            var directoryFinder = new FileRetriever(testUserInteraction);
+            var files = directoryFinder.GetFileLocation();
             Assert.IsNull(files);
             Assert.IsTrue(testUserInteraction.HasWriteLine("Invalid selection. Would you like to choose a different path? y/n"));
         }
@@ -71,8 +71,8 @@ namespace RomRenamer.Tests
             var readKeys = new List<char>() {};
             var readLines = new List<string>() {"q"};
             var testUserInteraction = new TestUserReadWrite(readKeys, readLines);
-            var directoryFinder = new DirectoryFinder(testUserInteraction);
-            var result = directoryFinder.Find();
+            var directoryFinder = new FileRetriever(testUserInteraction);
+            var result = directoryFinder.GetFileLocation();
             Assert.IsNull(result);
         }
 
@@ -82,8 +82,8 @@ namespace RomRenamer.Tests
             var readKeys = new List<char>() {'n' };
             var readLines = new List<string>() { " " };
             var testUserInteraction = new TestUserReadWrite(readKeys, readLines);
-            var directoryFinder = new DirectoryFinder(testUserInteraction);
-            directoryFinder.Find();
+            var directoryFinder = new FileRetriever(testUserInteraction);
+            directoryFinder.GetFileLocation();
             Assert.IsTrue(testUserInteraction.HasWriteLine("The directory path is required."));
         }
     }

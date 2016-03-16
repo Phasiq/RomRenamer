@@ -44,8 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileRenamer.cs" />
+    <Compile Include="NameComparer.cs" />
     <Compile Include="UserReadWrite.cs" />
-    <Compile Include="DirectoryFinder.cs" />
+    <Compile Include="FileRetriever.cs" />
     <Compile Include="FileMatcher.cs" />
     <Compile Include="IUserReadWrite.cs" />
     <Compile Include="Program.cs" />

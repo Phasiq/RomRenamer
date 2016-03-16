@@ -20,8 +20,8 @@ namespace RomRenamer.Tests
             var testUserReadWrite = new TestUserReadWrite(readKeys, readLines);
             var namesAvailable = new List<string> { "TestFile1", "Batman" };
             var fileName = "TestFile";
-            var fileMatcher = new FileMatcher(testUserReadWrite, 9);
-            var result = fileMatcher.GetUserDefinedMatch(fileName, namesAvailable);
+            var fileMatcher = new FileMatcher(testUserReadWrite, fileName, namesAvailable);
+            var result = fileMatcher.GetUserDefinedMatch();
 
             Assert.IsNotNull(result);
         }
@@ -35,8 +35,8 @@ namespace RomRenamer.Tests
             var testUserReadWrite = new TestUserReadWrite(readKeys, readLines);
             var namesAvailable = new List<string> { "TestFile1", "Batman" };
             var fileName = "TestFile";
-            var fileMatcher = new FileMatcher(testUserReadWrite, 9);
-            var result = fileMatcher.GetUserDefinedMatch(fileName, namesAvailable);
+            var fileMatcher = new FileMatcher(testUserReadWrite, fileName, namesAvailable);
+            var result = fileMatcher.GetUserDefinedMatch();
             Assert.IsTrue(testUserReadWrite.HasWriteLine("Invalid selection. Please try again."));
             Assert.IsNotNull(result);
         }
@@ -50,8 +50,8 @@ namespace RomRenamer.Tests
             var testUserReadWrite = new TestUserReadWrite(readKeys, readLines);
             var namesAvailable = new List<string> { "TestFile1", "Batman" };
             var fileName = "TestFile";
-            var fileMatcher = new FileMatcher(testUserReadWrite,9);
-            var result = fileMatcher.GetUserDefinedMatch(fileName, namesAvailable);
+            var fileMatcher = new FileMatcher(testUserReadWrite, fileName, namesAvailable);
+            var result = fileMatcher.GetUserDefinedMatch();
 
             Assert.IsNotNull(result);
             Assert.IsTrue(testUserReadWrite.HasWriteLine("Invalid selection. Please try again."));
@@ -66,8 +66,8 @@ namespace RomRenamer.Tests
             var testUserReadWrite = new TestUserReadWrite(readKeys, readLines);
             var namesAvailable = new List<string> { "TestFile1", "Batman" };
             var fileName = "Fs";
-            var fileMatcher = new FileMatcher(testUserReadWrite,9);
-            var result = fileMatcher.GetUserDefinedMatch(fileName, namesAvailable);
+            var fileMatcher = new FileMatcher(testUserReadWrite, fileName, namesAvailable);
+            var result = fileMatcher.GetUserDefinedMatch();
 
             Assert.IsNull(result);
         }
@@ -82,8 +82,8 @@ namespace RomRenamer.Tests
             var testUserReadWrite = new TestUserReadWrite(readKeys, readLines);
             var namesAvailable = new List<string> { "TestFile1", "Batman" };
             var fileName = "Fs";
-            var fileMatcher = new FileMatcher(testUserReadWrite, 19);
-            fileMatcher.GetUserDefinedMatch(fileName, namesAvailable);
+            var fileMatcher = new FileMatcher(testUserReadWrite, fileName, namesAvailable);
+            fileMatcher.GetUserDefinedMatch();
         }
 
         [TestMethod]
@@ -95,8 +95,8 @@ namespace RomRenamer.Tests
             var testUserReadWrite = new TestUserReadWrite(readKeys, readLines);
             var namesAvailable = new List<string> { "TestFile1", "Batman" };
             var fileName = "TestFile1";
-            var fileMatcher = new FileMatcher(testUserReadWrite, 9);
-            var result = fileMatcher.HasPerfectMatch(fileName, namesAvailable);
+            var fileMatcher = new FileMatcher(testUserReadWrite, fileName, namesAvailable);
+            var result = fileMatcher.HasPerfectMatch();
 
             Assert.IsTrue(result);
         }
@@ -114,8 +114,8 @@ namespace RomRenamer.Tests
                 "TestFile7", "TestFile8", "TestFile9","TestFile10","TestFile11"
             };
             var fileName = "Te";
-            var fileMatcher = new FileMatcher(testUserReadWrite, 9);
-            var result = fileMatcher.GetUserDefinedMatch(fileName, namesAvailable);
+            var fileMatcher = new FileMatcher(testUserReadWrite, fileName, namesAvailable);
+            var result = fileMatcher.GetUserDefinedMatch();
 
             Assert.IsNotNull(result);
             Assert.AreEqual("TestFile10", result);
@@ -134,10 +134,26 @@ namespace RomRenamer.Tests
                 "TestFile7", "TestFile8", "TestFile9","TestFile10","TestFile11"
             };
             var fileName = "Te";
-            var fileMatcher = new FileMatcher(testUserReadWrite, 9);
-            var result = fileMatcher.GetUserDefinedMatch(fileName, namesAvailable);
+            var fileMatcher = new FileMatcher(testUserReadWrite, fileName, namesAvailable);
+            var result = fileMatcher.GetUserDefinedMatch();
 
             Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void Derp()
+        {
+            var fileName = "Derp Berp";
+            var titleOptions = new List<string> {"Derp Berp", "Berp, Derp", "Barfy, Derp",};
+            var fileMatcher =
+                new FileMatcher(new TestUserReadWrite(new List<char> {'h'}, new List<string> {"Test", "Derp"}),
+                    fileName, titleOptions);
+            var result = fileMatcher.LevenshteinDistance(fileName, titleOptions[0]);
+            var result2 = fileMatcher.LevenshteinDistance(fileName, titleOptions[1]);
+            var result3 = fileMatcher.LevenshteinDistance(fileName, titleOptions[2]);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result2);
+            Assert.IsNotNull(result3);
         }
     }
 }

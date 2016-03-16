@@ -5,40 +5,47 @@ using System.Linq;
 
 namespace RomRenamer.ConsoleApp
 {
-    public class DirectoryFinder
+    public class FileRetriever
     {
         private readonly IUserReadWrite _userInteraction;
 
-        public DirectoryFinder(IUserReadWrite userInteraction)
+        public FileRetriever(IUserReadWrite userInteraction)
         {
             _userInteraction = userInteraction;
         }
 
-        public IReadOnlyCollection<string> Find()
+        public string GetFileLocation()
         {
             do
             {
                 _userInteraction.WriteLine("Please enter the path to the directory containing your ROM files or enter 'q' to quit.");
                 var userEntry = _userInteraction.ReadLine();
-                if (userEntry != null && userEntry.Equals("q", StringComparison.InvariantCultureIgnoreCase))
+                if (userEntry == null || userEntry.Equals("q", StringComparison.InvariantCultureIgnoreCase))
                 {
                     return null;
                 }
 
-                var files = GetFilesFromPath(userEntry);
-                if (files != null && files.Any())
+                if (!Directory.Exists(userEntry))
                 {
-                    return files;
+                    _userInteraction.WriteLine("The specified path is invalid. Please try again.");
                 }
-                _userInteraction.WriteLine("No files were found at the specified location.");
-                var result = ConfirmNewPath();
-                if (!result)
+                else
                 {
-                    return null;
+                    return userEntry;
                 }
-                
             } while (true);
         }
+
+        public IReadOnlyCollection<string> GetFiles(string directory)
+        {
+            var files = GetFilesFromPath(directory);
+            if (files != null && files.Any())
+            {
+                return files;
+            }
+            _userInteraction.WriteLine("No files were found at the specified location.");
+            return null;
+        } 
 
         private bool ConfirmNewPath()
         {

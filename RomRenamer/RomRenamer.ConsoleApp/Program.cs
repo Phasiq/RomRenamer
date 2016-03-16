@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 
 namespace RomRenamer.ConsoleApp
 {
@@ -11,59 +8,64 @@ namespace RomRenamer.ConsoleApp
         static void Main()
         {
             // First, ask the user for the location of ROM files
-            var directoryFinder = new DirectoryFinder(new UserReadWrite());
-            IReadOnlyCollection<string> fileList = directoryFinder.Find();
-            if (fileList == null)
-            {
-                return;
-            }
-
+            var fileRetriever = new FileRetriever(new UserReadWrite());
+            var fileDirectory = fileRetriever.GetFileLocation();
+            
             // Now, get the XML to compare to
             var xmlParser = new XmlParser(new UserReadWrite());
-            IList<string> xmlTitles = xmlParser.FindTitles();
-            if (xmlTitles == null)
+            IList<string> titleList = xmlParser.FindTitles();
+            if (titleList == null)
             {
                 return;
             }
 
-            var totalFilesToProcess = fileList.Count;
-            var totalFilesProcessed = 0;
+            var titlesToProcess = titleList.Count;
+            var titlesProcessed = 0;
             var successfulRenames = 0;
+            var unMatchedFileCount = 0;
+            var titlesWithNoMatch = new List<string>();
 
-            foreach (var file in fileList)
+            foreach (var title in titleList)
             {
-                var fileMatcher = new FileMatcher(new UserReadWrite(), 9, file, xmlTitles);
+                var files = fileRetriever.GetFiles(fileDirectory);
+                var fileMatcher = new FileMatcher(new UserReadWrite(), title, files);
                 if (fileMatcher.HasPerfectMatch())
                 {
-                    Console.WriteLine("Perfect match for " + file);
-                    totalFilesProcessed++;
+                    Console.WriteLine(title + " has perfect match!");
+                    titlesProcessed++;
+                    successfulRenames++;
                     continue;
                 }
-                var result = fileMatcher.GetUserDefinedMatch();
-                totalFilesProcessed++;
-                if (result == null)
+                var fileToRename = fileMatcher.GetUserDefinedMatch();
+                if (fileToRename == "exit")
+                    break;
+                titlesProcessed++;
+                
+                if (fileToRename == null)
                 {
-                    Console.WriteLine("No match was found for " + file + ". Press 'q' to quit or any other key to continue.");
-                    var key = Console.ReadKey();
-                    if (key.KeyChar == 'q')
-                    {
-                        return;
-                    }
-                }
-
-                if (result == null)
+                    Console.WriteLine(Environment.NewLine + "No match was found for " + title + ".");
+                    titlesWithNoMatch.Add(title);
+                    unMatchedFileCount++;
                     continue;
+                }
+                
                 var fileRenamer = new FileRenamer(new UserReadWrite());
-                if (fileRenamer.Rename(file, result))
+                if (fileRenamer.Rename(fileToRename, title))
                 {
                     successfulRenames++;
                 }
             }
 
             // Ask for a key press to close the app
+            Console.WriteLine(Environment.NewLine + "------------------------------------------");
             Console.WriteLine("Processing complete!");
-            Console.WriteLine("Processed " + totalFilesProcessed + " of " + totalFilesToProcess + ". " + successfulRenames + "files renamed.");
-            Console.WriteLine("Press any key to quit.");
+            Console.WriteLine("Processed " + titlesProcessed + " of " + titlesToProcess + ". " + successfulRenames + " files renamed.");
+            Console.WriteLine(unMatchedFileCount + " titles did not have a matching file."+ Environment.NewLine + Environment.NewLine + "Unmatched files:");
+            foreach (var titleWithNoMatch in titlesWithNoMatch)
+            {
+                Console.WriteLine(titleWithNoMatch);
+            }
+            Console.WriteLine(Environment.NewLine + "Press any key to quit.");
             Console.ReadKey();
         }
     }
